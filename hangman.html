@@ -13,58 +13,55 @@
 <!-- Retrieved from https://www.oocities.org/gilbertnews/arcade/hangman.html 2024-07-26. -->
 
 <script language="JavaScript">
-<!--
-function MakeArray(n) {
-  this.length=n;
-  for(var i=0;i<n;i++) this[i]="";
-}
 var LINE_ENDING="\n";
 var agt=navigator.userAgent.toLowerCase();
 if(agt.indexOf("win")!=-1) LINE_ENDING="\r\n";
 else if(agt.indexOf("sun")!=-1) LINE_ENDING="\n";
 else if(agt.indexOf("mac")!=-1) LINE_ENDING="\r";
 //hangman figure
-var poordude=new MakeArray(8);
-poordude[0]="    !"+LINE_ENDING;
-poordude[1]="    O"+LINE_ENDING;
-poordude[2]="   /";
-poordude[3]="|";
-poordude[4]="\\"+LINE_ENDING;
-poordude[5]="    |"+LINE_ENDING;
-poordude[6]="   / ";
-poordude[7]="\\"+LINE_ENDING+"  HANG!";
+const poordude = [
+  "    !" + LINE_ENDING,
+  "    O" + LINE_ENDING,
+  "   /",
+  "|",
+  "\\" + LINE_ENDING,
+  "    |" + LINE_ENDING,
+  "   / ",
+  "\\" + LINE_ENDING + "  HANG!"
+];
 //words to hang by
-var words=new MakeArray(30);
-words[0]="DEOXYRIBONUCLEIC ACID";
-words[1]="ORCHESTRA";
-words[2]="ENCYCLOPEDIA";
-words[3]="ONOMATOPOEIA";
-words[4]="CAESURA";
-words[5]="NUCLEAR EXPLOSION";
-words[6]="SOMETHING WICKED";
-words[7]="VACUUM CLEANER";
-words[8]="NERVOUS TWITCH";
-words[9]="BROKEN VINYL";
-words[10]="POLICE BRIGADE";
-words[11]="ATTORNEY";
-words[12]="SPECIAL PERSON";
-words[13]="GIANT PANDA";
-words[14]="GREEN BEAN";
-words[15]="CASSEROLE DISH";
-words[16]="RHINOCEROUS";
-words[17]="TEDDY BEAR";
-words[18]="SMELLY FLOWER";
-words[19]="PEOPLE'S PUPILS";
-words[20]="GYMNASIUM";
-words[21]="ANGIOSPERM";
-words[22]="SPACE SHUTTLE";
-words[23]="SPATULA";
-words[24]="NOTEBOOK";
-words[25]="MEDIOCRE";
-words[26]="BLACK KNIGHT";
-words[27]="STARRY NIGHT";
-words[28]="UNCONVENTIONAL";
-words[29]="RUSTY HELMET";
+const words = [
+  "DEOXYRIBONUCLEIC ACID",
+  "ORCHESTRA",
+  "ENCYCLOPEDIA",
+  "ONOMATOPOEIA",
+  "CAESURA",
+  "NUCLEAR EXPLOSION",
+  "SOMETHING WICKED",
+  "VACUUM CLEANER",
+  "NERVOUS TWITCH",
+  "BROKEN VINYL",
+  "POLICE BRIGADE",
+  "ATTORNEY",
+  "SPECIAL PERSON",
+  "GIANT PANDA",
+  "GREEN BEAN",
+  "CASSEROLE DISH",
+  "RHINOCEROUS",
+  "TEDDY BEAR",
+  "SMELLY FLOWER",
+  "PEOPLE'S PUPILS",
+  "GYMNASIUM",
+  "ANGIOSPERM",
+  "SPACE SHUTTLE",
+  "SPATULA",
+  "NOTEBOOK",
+  "MEDIOCRE",
+  "BLACK KNIGHT",
+  "STARRY NIGHT",
+  "UNCONVENTIONAL",
+  "RUSTY HELMET"
+];
 var curranswer;
 //tries tried
 var tries=0;
@@ -78,20 +75,14 @@ var winmessage="YOU SAVED"+LINE_ENDING+"HIM...."+LINE_ENDING+
                "THIS TIME..."+LINE_ENDING+
                " HA HA HA";
          
-function random(n) {
-  var now=new Date();
-  now=now.getTime();
-  return now%n;
-}
-         
 function start() {
   lettersguessed="";
-  var rindex=random(words.length);
+  var rindex = parseInt(words.length * Math.random());
   word=words[rindex];
   galphabet=ALPHABET;
   tries=0;
   correctremaining=0;
-  curranswer=new MakeArray(word.length);
+  curranswer=new Array(word.length);
   for(var i=0;i<word.length;i++) {
      if(ALPHABET.indexOf(word.substring(i,i+1))!=-1) {
        curranswer[i]="*";
@@ -129,7 +120,7 @@ function guess() {
   }
   redraw();
 }
-//fairly obvious
+
 //updates feedback to user
 function redraw() {
   document.hangman.alphabet.value=galphabet;
@@ -146,7 +137,6 @@ function redraw() {
   document.hangman.display.value="    ]"+LINE_ENDING;
   for(var i=0;i<tries;i++) document.hangman.display.value+=poordude[i];
 }
-//-->
 </script>
 </head>
 <body>
