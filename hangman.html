@@ -149,28 +149,29 @@ function redraw() {
 //-->
 </script>
 </head>
-<body bgcolor="#FFFFFF" text="#000000" link="#0000ff" alink="#ff0000" vlink="#ff00ff">
-
-<small style="font-size:10pt">The Gilbert Post: Arcade</small>
-<h1 style="font-size:34pt;font-weight:normal;margin-top:0px;margin-bottom:0px">Hangman</h1>
-
-<p>&nbsp;</p>
+<body>
+<h1>Hangman</h1>
 
 <form name="hangman">
 <textarea name="display" cols=13 rows=10>
-</textarea>MISTAKES LEFT: <input size=1 name="lives">
+</textarea>
+<br>
+MISTAKES LEFT: <input size=1 name="lives">
 <p>
 WORD: <input size=40 name="wordbox">
 <br>
 ALPHABET LEFTOVERS: <input size=26 name="alphabet">
 <br>
-<input size=1 maxlength=1 name="letterguess"><input type=button value="Guess A Letter" onClick="guess()"><input type="button" value="Start New Game" onClick="start()">
+<input size=1 maxlength=1 name="letterguess">
+<input id="guess-button" type=button value="Guess A Letter" onClick="guess()">
+<input id="start-button" type="button" value="Start New Game" onClick="start()"">
 </p>
 <p>
 YOU'VE GUESSED<input name="guessed" size=26>
 </p>
-<hr size=1 noshade>
-<a href="blackjack.html">[Black Jack]</a> <a href="connect4/">[Connect 4]</a> <a href="guessanum.html">[Guess a Number]</a> <a href="hangman.html">[Hangman]</a> <a href="othello">[Othello]</a> <a href="pong.html">[Pong]</a> <a href="rocks/">[Rockslide]</a> <a href="tictactoe.html">[Tic-Tac-Toe]</a> <a href="towers/">[Towers of Hanoi]</a>
 </form>
+<script>
+  start();
+</script>
 </body>
 </html>
