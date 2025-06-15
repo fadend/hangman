@@ -19,7 +19,7 @@ if(agt.indexOf("win")!=-1) LINE_ENDING="\r\n";
 else if(agt.indexOf("sun")!=-1) LINE_ENDING="\n";
 else if(agt.indexOf("mac")!=-1) LINE_ENDING="\r";
 //hangman figure
-const poordude = [
+const POOR_DUDE = [
   "    !" + LINE_ENDING,
   "    O" + LINE_ENDING,
   "   /",
@@ -29,6 +29,7 @@ const poordude = [
   "   / ",
   "\\" + LINE_ENDING + "  HANG!"
 ];
+const MAX_TRIES = POOR_DUDE.length;
 //words to hang by
 const words = [
   "DEOXYRIBONUCLEIC ACID",
@@ -82,13 +83,14 @@ function start() {
   galphabet=ALPHABET;
   tries=0;
   correctremaining=0;
-  curranswer=new Array(word.length);
-  for(var i=0;i<word.length;i++) {
-     if(ALPHABET.indexOf(word.substring(i,i+1))!=-1) {
-       curranswer[i]="*";
-       correctremaining++;
-     }
-     else curranswer[i]=word.substring(i,i+1);
+  curranswer = [];
+  for (let c of word) {
+    if (ALPHABET.indexOf(c) !== -1) {
+      curranswer.push('*');
+      correctremaining++;
+    } else {
+      curranswer.push(c);
+    }
   }
   //clear display
   gameover=false;
@@ -105,9 +107,9 @@ function guess() {
   else {galphabet=galphabet.substring(0,galphabet.indexOf(currguess))+ galphabet.substring(galphabet.indexOf(currguess)+1,galphabet.length);}
   lettersguessed+=currguess;
   var index=-1;//kludge for a kludged loop
-  if(word.indexOf(currguess)==-1) {
+  if (word.indexOf(currguess) === -1) {
     tries++;
-    if(tries==8) {
+    if(tries === MAX_TRIES) {
       gameover=true;
     }
   }
@@ -125,17 +127,17 @@ function guess() {
 function redraw() {
   document.hangman.alphabet.value=galphabet;
   document.hangman.guessed.value=lettersguessed;
-  document.hangman.lives.value=8-tries;
+  document.hangman.lives.value = MAX_TRIES - tries;
   document.hangman.letterguess.focus();
   document.hangman.letterguess.select();
   document.hangman.wordbox.value="";
-  for(i=0;i<word.length;i++) document.hangman.wordbox.value+=curranswer[i];
+  document.hangman.wordbox.value = curranswer.join("");
   if(correctremaining==0) {
     document.hangman.display.value=winmessage;
     return;
   }
   document.hangman.display.value="    ]"+LINE_ENDING;
-  for(var i=0;i<tries;i++) document.hangman.display.value+=poordude[i];
+  document.hangman.display.value = POOR_DUDE.slice(0, tries + 1).join("");
 }
 </script>
 </head>
