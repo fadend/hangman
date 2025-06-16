@@ -18,7 +18,7 @@ var agt=navigator.userAgent.toLowerCase();
 if(agt.indexOf("win")!=-1) LINE_ENDING="\r\n";
 else if(agt.indexOf("sun")!=-1) LINE_ENDING="\n";
 else if(agt.indexOf("mac")!=-1) LINE_ENDING="\r";
-//hangman figure
+// hangman figure
 const POOR_DUDE = [
   "    !" + LINE_ENDING,
   "    O" + LINE_ENDING,
@@ -31,7 +31,7 @@ const POOR_DUDE = [
 ];
 const MAX_TRIES = POOR_DUDE.length;
 //words to hang by
-const words = [
+const WORDS = [
   "DEOXYRIBONUCLEIC ACID",
   "ORCHESTRA",
   "ENCYCLOPEDIA",
@@ -65,24 +65,23 @@ const words = [
 ];
 var curranswer;
 //tries tried
-var tries=0;
-var lettersguessed="";
-var correctremaining=0;
-var ALPHABET="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-var galphabet="";
-var word="";
-var gameover=true;
-var winmessage="YOU SAVED"+LINE_ENDING+"HIM...."+LINE_ENDING+
-               "THIS TIME..."+LINE_ENDING+
+var tries = 0;
+var lettersguessed = "";
+var correctremaining = 0;
+const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+var galphabet = "";
+var word = "";
+var gameover = true;
+const WIN_MESSAGE = "YOU SAVED" + LINE_ENDING + "HIM...." + LINE_ENDING +
+               "THIS TIME..." + LINE_ENDING +
                " HA HA HA";
          
 function start() {
-  lettersguessed="";
-  var rindex = parseInt(words.length * Math.random());
-  word=words[rindex];
-  galphabet=ALPHABET;
-  tries=0;
-  correctremaining=0;
+  lettersguessed = "";
+  word = WORDS[parseInt(WORDS.length * Math.random())];
+  galphabet = ALPHABET;
+  tries = 0;
+  correctremaining = 0;
   curranswer = [];
   for (let c of word) {
     if (ALPHABET.indexOf(c) !== -1) {
@@ -92,52 +91,60 @@ function start() {
       curranswer.push(c);
     }
   }
-  //clear display
-  gameover=false;
-  document.hangman.letterguess.value="";
+  // clear display
+  gameover = false;
+  document.hangman.letterguess.value = "";
   redraw();
 }
 function guess() {
-  //get letter and test it
-  if(gameover) return;
-  var currguess=document.hangman.letterguess.value.toUpperCase();
-  if(currguess.length==0) return;
-  //not a valid guess...definitely should give annoying message
-  if(galphabet.indexOf(currguess)==-1) return;
-  else {galphabet=galphabet.substring(0,galphabet.indexOf(currguess))+ galphabet.substring(galphabet.indexOf(currguess)+1,galphabet.length);}
-  lettersguessed+=currguess;
-  var index=-1;//kludge for a kludged loop
+  if (gameover) {
+    return;
+  }
+  var currguess = document.hangman.letterguess.value.toUpperCase();
+  if (!currguess) {
+    return;
+  }
+  // not a valid guess...definitely should give annoying message
+  const alphabetIndex = galphabet.indexOf(currguess);
+  if (alphabetIndex === -1) {
+    return;
+  } else {
+    galphabet = galphabet.substring(0, alphabetIndex) + galphabet.substring(alphabetIndex + 1, galphabet.length);
+  }
+  lettersguessed += currguess;
+  var index = -1;  // kludge for a kludged loop
   if (word.indexOf(currguess) === -1) {
     tries++;
-    if(tries === MAX_TRIES) {
-      gameover=true;
+    if (tries === MAX_TRIES) {
+      gameover = true;
     }
-  }
-  else {
-    while((index=word.indexOf(currguess,index+1))!=-1) {
-      curranswer[index]=currguess;
+  } else {
+    while ((index = word.indexOf(currguess, index + 1)) != -1) {
+      curranswer[index] = currguess;
       correctremaining--;
     }
-    if(correctremaining==0) gameover=true;
+    if (correctremaining === 0) {
+      gameover = true;
+    }
   }
   redraw();
 }
 
-//updates feedback to user
+// updates feedback to user
 function redraw() {
-  document.hangman.alphabet.value=galphabet;
-  document.hangman.guessed.value=lettersguessed;
+  document.hangman.alphabet.value = galphabet;
+  document.hangman.guessed.value = lettersguessed;
   document.hangman.lives.value = MAX_TRIES - tries;
   document.hangman.letterguess.focus();
   document.hangman.letterguess.select();
-  document.hangman.wordbox.value="";
+  document.hangman.wordbox.value = "";
   document.hangman.wordbox.value = curranswer.join("");
-  if(correctremaining==0) {
-    document.hangman.display.value=winmessage;
+  if (correctremaining === 0) {
+    document.hangman.display.value = WIN_MESSAGE;
     return;
   }
-  document.hangman.display.value="    ]"+LINE_ENDING;
-  document.hangman.display.value = POOR_DUDE.slice(0, tries + 1).join("");
+  document.hangman.display.value = "    ]" + LINE_ENDING;
+  document.hangman.display.value = POOR_DUDE.slice(0, tries).join("");
 }
 </script>
 </head>
