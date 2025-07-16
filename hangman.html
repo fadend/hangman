@@ -1,7 +1,7 @@
 <html>
-<head>
-<title>The Gilbert Post: Arcade: Hangman</title>
-<!--Hangman copyright. 1999, 2001 by David Faden
+  <head>
+    <title>The Gilbert Post: Arcade: Hangman</title>
+    <!--Hangman copyright. 1999, 2001 by David Faden
     ]
     !
     O
@@ -10,174 +10,26 @@
    / \   
   HANG!
 -->
-<!-- Retrieved from https://www.oocities.org/gilbertnews/arcade/hangman.html 2024-07-26. -->
+    <!-- Retrieved from https://www.oocities.org/gilbertnews/arcade/hangman.html 2024-07-26. -->
+  </head>
+  <body>
+    <h1>Hangman</h1>
 
-<script language="JavaScript">
-var LINE_ENDING="\n";
-var agt=navigator.userAgent.toLowerCase();
-if(agt.indexOf("win")!=-1) LINE_ENDING="\r\n";
-else if(agt.indexOf("sun")!=-1) LINE_ENDING="\n";
-else if(agt.indexOf("mac")!=-1) LINE_ENDING="\r";
-// hangman figure
-const POOR_DUDE = [
-  "    !" + LINE_ENDING,
-  "    O" + LINE_ENDING,
-  "   /",
-  "|",
-  "\\" + LINE_ENDING,
-  "    |" + LINE_ENDING,
-  "   / ",
-  "\\" + LINE_ENDING + "  HANG!"
-];
-const MAX_TRIES = POOR_DUDE.length;
-//words to hang by
-const WORDS = [
-  "DEOXYRIBONUCLEIC ACID",
-  "ORCHESTRA",
-  "ENCYCLOPEDIA",
-  "ONOMATOPOEIA",
-  "CAESURA",
-  "NUCLEAR EXPLOSION",
-  "SOMETHING WICKED",
-  "VACUUM CLEANER",
-  "NERVOUS TWITCH",
-  "BROKEN VINYL",
-  "POLICE BRIGADE",
-  "ATTORNEY",
-  "SPECIAL PERSON",
-  "GIANT PANDA",
-  "GREEN BEAN",
-  "CASSEROLE DISH",
-  "RHINOCEROUS",
-  "TEDDY BEAR",
-  "SMELLY FLOWER",
-  "PEOPLE'S PUPILS",
-  "GYMNASIUM",
-  "ANGIOSPERM",
-  "SPACE SHUTTLE",
-  "SPATULA",
-  "NOTEBOOK",
-  "MEDIOCRE",
-  "BLACK KNIGHT",
-  "STARRY NIGHT",
-  "UNCONVENTIONAL",
-  "RUSTY HELMET"
-];
-var curranswer;
-//tries tried
-var tries = 0;
-var lettersguessed = "";
-var correctremaining = 0;
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-var galphabet = "";
-var word = "";
-var gameover = true;
-const WIN_MESSAGE = "YOU SAVED" + LINE_ENDING + "HIM...." + LINE_ENDING +
-               "THIS TIME..." + LINE_ENDING +
-               " HA HA HA";
-         
-function start() {
-  lettersguessed = "";
-  word = WORDS[parseInt(WORDS.length * Math.random())];
-  galphabet = ALPHABET;
-  tries = 0;
-  correctremaining = 0;
-  curranswer = [];
-  for (let c of word) {
-    if (ALPHABET.indexOf(c) !== -1) {
-      curranswer.push('*');
-      correctremaining++;
-    } else {
-      curranswer.push(c);
-    }
-  }
-  // clear display
-  gameover = false;
-  document.hangman.letterguess.value = "";
-  redraw();
-}
-function guess() {
-  if (gameover) {
-    return;
-  }
-  var currguess = document.hangman.letterguess.value.toUpperCase();
-  if (!currguess) {
-    return;
-  }
-  // not a valid guess...definitely should give annoying message
-  const alphabetIndex = galphabet.indexOf(currguess);
-  if (alphabetIndex === -1) {
-    return;
-  } else {
-    galphabet = galphabet.substring(0, alphabetIndex) + galphabet.substring(alphabetIndex + 1, galphabet.length);
-  }
-  lettersguessed += currguess;
-  var index = -1;  // kludge for a kludged loop
-  if (word.indexOf(currguess) === -1) {
-    tries++;
-    if (tries === MAX_TRIES) {
-      gameover = true;
-    }
-  } else {
-    while ((index = word.indexOf(currguess, index + 1)) != -1) {
-      curranswer[index] = currguess;
-      correctremaining--;
-    }
-    if (correctremaining === 0) {
-      gameover = true;
-    }
-  }
-  redraw();
-}
-
-// updates feedback to user
-function redraw() {
-  document.hangman.alphabet.value = galphabet;
-  document.hangman.guessed.value = lettersguessed;
-  document.hangman.lives.value = MAX_TRIES - tries;
-  document.hangman.letterguess.focus();
-  document.hangman.letterguess.select();
-  document.hangman.wordbox.value = "";
-  document.hangman.wordbox.value = curranswer.join("");
-  if (correctremaining === 0) {
-    document.hangman.display.value = WIN_MESSAGE;
-    return;
-  }
-  document.hangman.display.value = "    ]" + LINE_ENDING;
-  document.hangman.display.value = POOR_DUDE.slice(0, tries).join("");
-}
-</script>
-</head>
-<body>
-<h1>Hangman</h1>
-
-<form name="hangman">
-<textarea name="display" cols=13 rows=10>
-</textarea>
-<br>
-MISTAKES LEFT: <input size=1 name="lives">
-<p>
-WORD: <input size=40 name="wordbox">
-<br>
-ALPHABET LEFTOVERS: <input size=26 name="alphabet">
-<br>
-<input size=1 maxlength=1 name="letterguess">
-<input id="guess-button" type=button value="Guess A Letter" onClick="guess()">
-<input id="start-button" type="button" value="Start New Game" onClick="start()"">
-</p>
-<p>
-YOU'VE GUESSED<input name="guessed" size=26>
-</p>
-</form>
-<script>
-  start();
-  document.querySelector('[name="letterguess"]').addEventListener('keyup', event => {
-    if (event.key === 'Enter') {
-      guess();
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  })
-</script>
-</body>
+    <form name="hangman">
+      <textarea name="display" cols="13" rows="10"></textarea>
+      <br />
+      MISTAKES LEFT: <input size="1" name="lives" />
+      <p>
+        WORD: <input size="40" name="wordbox" />
+        <br />
+        ALPHABET LEFTOVERS: <input size="26" name="alphabet" />
+        <br />
+        <input size="1" maxlength="1" name="letterguess" />
+        <input id="guess-button" type="button" value="Guess A Letter" />
+        <input id="start-button" type="button" value="Start New Game" />
+      </p>
+      <p>YOU'VE GUESSED<input name="guessed" size="26" /></p>
+    </form>
+    <script src="hangman.js"></script>
+  </body>
 </html>
