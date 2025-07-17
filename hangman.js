@@ -1,3 +1,9 @@
+const hangmanDisplay = document.getElementById("hangman");
+const livesDisplay = document.getElementById("lives");
+const guessedDisplay = document.getElementById("guessed");
+const wordDisplay = document.getElementById("wordbox");
+const alphabetDisplay = document.getElementById("alphabet");
+const letterguess = document.getElementById("letterguess");
 var LINE_ENDING = "\n";
 var agt = navigator.userAgent.toLowerCase();
 if (agt.indexOf("win") != -1) LINE_ENDING = "\r\n";
@@ -83,14 +89,14 @@ function start() {
   }
   // clear display
   gameover = false;
-  document.hangman.letterguess.value = "";
+  letterguess.value = "";
   redraw();
 }
 function guess() {
   if (gameover) {
     return;
   }
-  var currguess = document.hangman.letterguess.value.toUpperCase();
+  var currguess = letterguess.value.toUpperCase();
   if (!currguess) {
     return;
   }
@@ -124,31 +130,27 @@ function guess() {
 
 // updates feedback to user
 function redraw() {
-  document.hangman.alphabet.value = galphabet;
-  document.hangman.guessed.value = lettersguessed;
-  document.hangman.lives.value = MAX_TRIES - tries;
-  document.hangman.letterguess.focus();
-  document.hangman.letterguess.select();
-  document.hangman.wordbox.value = "";
-  document.hangman.wordbox.value = curranswer.join("");
+  alphabetDisplay.textContent = galphabet;
+  guessedDisplay.textContent = lettersguessed;
+  livesDisplay.textContent = MAX_TRIES - tries;
+  letterguess.focus();
+  letterguess.select();
+  wordDisplay.textContent = curranswer.join("");
   if (correctremaining === 0) {
-    document.hangman.display.value = WIN_MESSAGE;
-    return;
+    hangmanDisplay.innerHTML = WIN_MESSAGE;
+  } else {
+    hangmanDisplay.innerHTML = POOR_DUDE.slice(0, tries).join("");
   }
-  document.hangman.display.value = "    ]" + LINE_ENDING;
-  document.hangman.display.value = POOR_DUDE.slice(0, tries).join("");
 }
 
 document.getElementById("guess-button").addEventListener("click", guess);
 document.getElementById("start-button").addEventListener("click", start);
-document
-  .querySelector('[name="letterguess"]')
-  .addEventListener("keyup", (event) => {
-    if (event.key === "Enter") {
-      guess();
-      event.preventDefault();
-      event.stopPropagation();
-    }
-  });
+letterguess.addEventListener("keyup", (event) => {
+  if (event.key === "Enter") {
+    guess();
+    event.preventDefault();
+    event.stopPropagation();
+  }
+});
 
 start();

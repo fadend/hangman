@@ -1,35 +1,32 @@
 <html>
   <head>
-    <title>The Gilbert Post: Arcade: Hangman</title>
+    <title>Hangman</title>
     <!--Hangman copyright. 1999, 2001 by David Faden
     ]
     !
     O
    /|\
     |
-   / \   
+   / \
   HANG!
--->
+  -->
     <!-- Retrieved from https://www.oocities.org/gilbertnews/arcade/hangman.html 2024-07-26. -->
+    <link href="hangman.css" rel="stylesheet" />
   </head>
   <body>
     <h1>Hangman</h1>
-
-    <form name="hangman">
-      <textarea name="display" cols="13" rows="10"></textarea>
+    <pre id="hangman"></pre>
+    MISTAKES LEFT: <span id="lives"></span>
+    <p>
+      WORD: <span id="wordbox" class="monospace"></span>
       <br />
-      MISTAKES LEFT: <input size="1" name="lives" />
-      <p>
-        WORD: <input size="40" name="wordbox" />
-        <br />
-        ALPHABET LEFTOVERS: <input size="26" name="alphabet" />
-        <br />
-        <input size="1" maxlength="1" name="letterguess" />
-        <input id="guess-button" type="button" value="Guess A Letter" />
-        <input id="start-button" type="button" value="Start New Game" />
-      </p>
-      <p>YOU'VE GUESSED<input name="guessed" size="26" /></p>
-    </form>
+      ALPHABET LEFTOVERS: <span id="alphabet" class="monospace"></span>
+      <br />
+      <input size="1" maxlength="1" id="letterguess" />
+      <input id="guess-button" type="button" value="Guess A Letter" />
+      <input id="start-button" type="button" value="Start New Game" />
+    </p>
+    <p>YOU'VE GUESSED: <span id="guessed" class="monospace"></span></p>
     <script src="hangman.js"></script>
   </body>
 </html>
