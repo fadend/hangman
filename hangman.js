@@ -5,10 +5,6 @@ const wordDisplay = document.getElementById("wordbox");
 const alphabetDisplay = document.getElementById("alphabet");
 const letterguess = document.getElementById("letterguess");
 var LINE_ENDING = "\n";
-var agt = navigator.userAgent.toLowerCase();
-if (agt.indexOf("win") != -1) LINE_ENDING = "\r\n";
-else if (agt.indexOf("sun") != -1) LINE_ENDING = "\n";
-else if (agt.indexOf("mac") != -1) LINE_ENDING = "\r";
 // hangman figure
 const POOR_DUDE = [
   "    !" + LINE_ENDING,
