@@ -4,7 +4,7 @@ const guessedDisplay = document.getElementById("guessed");
 const wordDisplay = document.getElementById("wordbox");
 const alphabetDisplay = document.getElementById("alphabet");
 const letterguess = document.getElementById("letterguess");
-var LINE_ENDING = "\n";
+const LINE_ENDING = "\n";
 // hangman figure
 const POOR_DUDE = [
   "    !" + LINE_ENDING,
@@ -50,15 +50,15 @@ const WORDS = [
   "UNCONVENTIONAL",
   "RUSTY HELMET",
 ];
-var curranswer;
+let curranswer;
 //tries tried
-var tries = 0;
-var lettersguessed = "";
-var correctremaining = 0;
+let tries = 0;
+let lettersguessed = "";
+let correctremaining = 0;
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-var galphabet = "";
-var word = "";
-var gameover = true;
+let galphabet = "";
+let word = "";
+let gameover = true;
 const WIN_MESSAGE =
   "YOU SAVED" +
   LINE_ENDING +
@@ -92,7 +92,7 @@ function guess() {
   if (gameover) {
     return;
   }
-  var currguess = letterguess.value.toUpperCase();
+  let currguess = letterguess.value.toUpperCase();
   if (!currguess) {
     return;
   }
@@ -106,7 +106,7 @@ function guess() {
       galphabet.substring(alphabetIndex + 1, galphabet.length);
   }
   lettersguessed += currguess;
-  var index = -1; // kludge for a kludged loop
+  let index = -1; // kludge for a kludged loop
   if (word.indexOf(currguess) === -1) {
     tries++;
     if (tries === MAX_TRIES) {
