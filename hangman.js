@@ -3,7 +3,7 @@ const livesDisplay = document.getElementById("lives");
 const guessedDisplay = document.getElementById("guessed");
 const wordDisplay = document.getElementById("wordbox");
 const alphabetDisplay = document.getElementById("alphabet");
-const letterguess = document.getElementById("letterguess");
+const letterGuessInput = document.getElementById("letterguess");
 const LINE_ENDING = "\n";
 // hangman figure
 const POOR_DUDE = [
@@ -50,15 +50,15 @@ const WORDS = [
   "UNCONVENTIONAL",
   "RUSTY HELMET",
 ];
-let curranswer;
+let currAnswer;
 //tries tried
 let tries = 0;
-let lettersguessed = "";
+let lettersGuessed = "";
 let correctremaining = 0;
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 let galphabet = "";
 let word = "";
-let gameover = true;
+let gameOver = true;
 const WIN_MESSAGE =
   "YOU SAVED" +
   LINE_ENDING +
@@ -69,35 +69,35 @@ const WIN_MESSAGE =
   " HA HA HA";
 
 function start() {
-  lettersguessed = "";
+  lettersGuessed = "";
   word = WORDS[parseInt(WORDS.length * Math.random())];
   galphabet = ALPHABET;
   tries = 0;
   correctremaining = 0;
-  curranswer = [];
+  currAnswer = [];
   for (let c of word) {
     if (ALPHABET.indexOf(c) !== -1) {
-      curranswer.push("*");
+      currAnswer.push("*");
       correctremaining++;
     } else {
-      curranswer.push(c);
+      currAnswer.push(c);
     }
   }
   // clear display
-  gameover = false;
-  letterguess.value = "";
+  gameOver = false;
+  letterGuessInput.value = "";
   redraw();
 }
 function guess() {
-  if (gameover) {
+  if (gameOver) {
     return;
   }
-  let currguess = letterguess.value.toUpperCase();
-  if (!currguess) {
+  let currGuess = letterGuessInput.value.toUpperCase();
+  if (!currGuess) {
     return;
   }
   // not a valid guess...definitely should give annoying message
-  const alphabetIndex = galphabet.indexOf(currguess);
+  const alphabetIndex = galphabet.indexOf(currGuess);
   if (alphabetIndex === -1) {
     return;
   } else {
@@ -105,20 +105,20 @@ function guess() {
       galphabet.substring(0, alphabetIndex) +
       galphabet.substring(alphabetIndex + 1, galphabet.length);
   }
-  lettersguessed += currguess;
+  lettersGuessed += currGuess;
   let index = -1; // kludge for a kludged loop
-  if (word.indexOf(currguess) === -1) {
+  if (word.indexOf(currGuess) === -1) {
     tries++;
     if (tries === MAX_TRIES) {
-      gameover = true;
+      gameOver = true;
     }
   } else {
-    while ((index = word.indexOf(currguess, index + 1)) != -1) {
-      curranswer[index] = currguess;
+    while ((index = word.indexOf(currGuess, index + 1)) != -1) {
+      currAnswer[index] = currGuess;
       correctremaining--;
     }
     if (correctremaining === 0) {
-      gameover = true;
+      gameOver = true;
     }
   }
   redraw();
@@ -127,11 +127,11 @@ function guess() {
 // updates feedback to user
 function redraw() {
   alphabetDisplay.textContent = galphabet;
-  guessedDisplay.textContent = lettersguessed;
+  guessedDisplay.textContent = lettersGuessed;
   livesDisplay.textContent = MAX_TRIES - tries;
-  letterguess.focus();
-  letterguess.select();
-  wordDisplay.textContent = curranswer.join("");
+  letterGuessInput.focus();
+  letterGuessInput.select();
+  wordDisplay.textContent = currAnswer.join("");
   if (correctremaining === 0) {
     hangmanDisplay.innerHTML = WIN_MESSAGE;
   } else {
@@ -141,7 +141,7 @@ function redraw() {
 
 document.getElementById("guess-button").addEventListener("click", guess);
 document.getElementById("start-button").addEventListener("click", start);
-letterguess.addEventListener("keyup", (event) => {
+letterGuessInput.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
     guess();
     event.preventDefault();
