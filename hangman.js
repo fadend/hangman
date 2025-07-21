@@ -1,9 +1,3 @@
-const hangmanDisplay = document.getElementById("hangman");
-const livesDisplay = document.getElementById("lives");
-const guessedDisplay = document.getElementById("guessed");
-const wordDisplay = document.getElementById("wordbox");
-const alphabetDisplay = document.getElementById("alphabet");
-const letterGuessInput = document.getElementById("letterguess");
 const LINE_ENDING = "\n";
 // hangman figure
 const POOR_DUDE = [
@@ -16,6 +10,16 @@ const POOR_DUDE = [
   "   / ",
   "\\" + LINE_ENDING + "  HANG!",
 ];
+
+const WIN_MESSAGE =
+  "YOU SAVED" +
+  LINE_ENDING +
+  "HIM...." +
+  LINE_ENDING +
+  "THIS TIME..." +
+  LINE_ENDING +
+  " HA HA HA";
+
 const MAX_TRIES = POOR_DUDE.length;
 //words to hang by
 const WORDS = [
@@ -50,24 +54,26 @@ const WORDS = [
   "UNCONVENTIONAL",
   "RUSTY HELMET",
 ];
+
+const ALPHABET = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
+const hangmanDisplay = document.getElementById("hangman");
+const livesDisplay = document.getElementById("lives");
+const guessedDisplay = document.getElementById("guessed");
+const wordDisplay = document.getElementById("wordbox");
+const alphabetDisplay = document.getElementById("alphabet");
+const letterGuessInput = document.getElementById("letterguess");
+
 let currAnswer;
 //tries tried
 let tries = 0;
 let lettersGuessed = "";
 let correctRemaining = 0;
-const ALPHABET = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+
 let remainingAlphabet = new Set(ALPHABET);
 let word = "";
 let gameOver = true;
 let charToIndexes = new Map();
-const WIN_MESSAGE =
-  "YOU SAVED" +
-  LINE_ENDING +
-  "HIM...." +
-  LINE_ENDING +
-  "THIS TIME..." +
-  LINE_ENDING +
-  " HA HA HA";
 
 function start() {
   lettersGuessed = "";
@@ -102,7 +108,6 @@ function guess() {
   if (!currGuess) {
     return;
   }
-  // not a valid guess...definitely should give annoying message
   if (!remainingAlphabet.has(currGuess)) {
     return;
   }
