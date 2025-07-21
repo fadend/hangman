@@ -1,3 +1,4 @@
+<!doctype html>
 <html>
   <head>
     <title>Hangman</title>
@@ -16,17 +17,19 @@
   <body>
     <h1>Hangman</h1>
     <pre id="hangman"></pre>
-    MISTAKES LEFT: <span id="lives"></span>
     <p>
       WORD: <span id="wordbox" class="monospace"></span>
       <br />
-      ALPHABET LEFTOVERS: <span id="alphabet" class="monospace"></span>
+      MISTAKES LEFT: <span id="lives"></span>
+      <br />
+      LETTERS LEFT TO TRY: <span id="alphabet" class="monospace"></span>
+      <br />
+      YOU'VE GUESSED: <span id="guessed" class="monospace"></span>
       <br />
       <input size="1" maxlength="1" id="letterguess" />
       <input id="guess-button" type="button" value="Guess A Letter" />
       <input id="start-button" type="button" value="Start New Game" />
     </p>
-    <p>YOU'VE GUESSED: <span id="guessed" class="monospace"></span></p>
     <script src="hangman.js"></script>
   </body>
 </html>

@@ -1,7 +1,13 @@
 #hangman {
-  height: 8rem;
+  border-left: gray solid 1px;
+  border-top: gray solid 1px;
   font-size: 15pt;
+  height: 8rem;
+  padding-left: 4px;
+  padding-top: 4px;
+  width: 100px;
 }
 .monospace {
   font-family: monospace;
+  font-size: 1.1rem;
 }
