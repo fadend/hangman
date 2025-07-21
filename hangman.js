@@ -121,7 +121,6 @@ function guess() {
       gameOver = true;
     }
   }
-  redraw();
 }
 
 // updates feedback to user
@@ -139,11 +138,18 @@ function redraw() {
   }
 }
 
-document.getElementById("guess-button").addEventListener("click", guess);
+function guessAndRedraw() {
+  guess();
+  redraw();
+}
+
+document
+  .getElementById("guess-button")
+  .addEventListener("click", guessAndRedraw);
 document.getElementById("start-button").addEventListener("click", start);
 letterGuessInput.addEventListener("keyup", (event) => {
   if (event.key === "Enter") {
-    guess();
+    guessAndRedraw();
     event.preventDefault();
     event.stopPropagation();
   }
