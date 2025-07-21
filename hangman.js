@@ -54,11 +54,12 @@ let currAnswer;
 //tries tried
 let tries = 0;
 let lettersGuessed = "";
-let correctremaining = 0;
-const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+let correctRemaining = 0;
+const ALPHABET = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 let remainingAlphabet = new Set(ALPHABET);
 let word = "";
 let gameOver = true;
+let charToIndexes = new Map();
 const WIN_MESSAGE =
   "YOU SAVED" +
   LINE_ENDING +
@@ -73,12 +74,17 @@ function start() {
   word = WORDS[parseInt(WORDS.length * Math.random())];
   remainingAlphabet = new Set(ALPHABET);
   tries = 0;
-  correctremaining = 0;
+  correctRemaining = 0;
   currAnswer = [];
-  for (let c of word) {
-    if (ALPHABET.indexOf(c) !== -1) {
+  charToIndexes = new Map();
+  for (let i in word) {
+    const c = word[i];
+    if (ALPHABET.has(c)) {
       currAnswer.push("*");
-      correctremaining++;
+      correctRemaining++;
+      const indexes = charToIndexes.get(c) || [];
+      indexes.push(i);
+      charToIndexes.set(c, indexes);
     } else {
       currAnswer.push(c);
     }
@@ -102,18 +108,18 @@ function guess() {
   }
   remainingAlphabet.delete(currGuess);
   lettersGuessed += currGuess;
-  let index = -1; // kludge for a kludged loop
-  if (word.indexOf(currGuess) === -1) {
+  const indexes = charToIndexes.get(currGuess);
+  if (!indexes) {
     tries++;
     if (tries === MAX_TRIES) {
       gameOver = true;
     }
   } else {
-    while ((index = word.indexOf(currGuess, index + 1)) != -1) {
-      currAnswer[index] = currGuess;
-      correctremaining--;
+    for (let i of indexes) {
+      currAnswer[i] = currGuess;
+      correctRemaining--;
     }
-    if (correctremaining === 0) {
+    if (correctRemaining === 0) {
       gameOver = true;
     }
   }
@@ -127,7 +133,7 @@ function redraw() {
   letterGuessInput.focus();
   letterGuessInput.select();
   wordDisplay.textContent = currAnswer.join("");
-  if (correctremaining === 0) {
+  if (correctRemaining === 0) {
     hangmanDisplay.innerHTML = WIN_MESSAGE;
   } else {
     hangmanDisplay.innerHTML = POOR_DUDE.slice(0, tries).join("");
