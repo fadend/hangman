@@ -56,7 +56,7 @@ let tries = 0;
 let lettersGuessed = "";
 let correctremaining = 0;
 const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-let galphabet = "";
+let remainingAlphabet = new Set(ALPHABET);
 let word = "";
 let gameOver = true;
 const WIN_MESSAGE =
@@ -71,7 +71,7 @@ const WIN_MESSAGE =
 function start() {
   lettersGuessed = "";
   word = WORDS[parseInt(WORDS.length * Math.random())];
-  galphabet = ALPHABET;
+  remainingAlphabet = new Set(ALPHABET);
   tries = 0;
   correctremaining = 0;
   currAnswer = [];
@@ -97,14 +97,10 @@ function guess() {
     return;
   }
   // not a valid guess...definitely should give annoying message
-  const alphabetIndex = galphabet.indexOf(currGuess);
-  if (alphabetIndex === -1) {
+  if (!remainingAlphabet.has(currGuess)) {
     return;
-  } else {
-    galphabet =
-      galphabet.substring(0, alphabetIndex) +
-      galphabet.substring(alphabetIndex + 1, galphabet.length);
   }
+  remainingAlphabet.delete(currGuess);
   lettersGuessed += currGuess;
   let index = -1; // kludge for a kludged loop
   if (word.indexOf(currGuess) === -1) {
@@ -125,7 +121,7 @@ function guess() {
 
 // updates feedback to user
 function redraw() {
-  alphabetDisplay.textContent = galphabet;
+  alphabetDisplay.textContent = [...remainingAlphabet].join("");
   guessedDisplay.textContent = lettersGuessed;
   livesDisplay.textContent = MAX_TRIES - tries;
   letterGuessInput.focus();
