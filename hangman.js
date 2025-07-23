@@ -57,109 +57,117 @@ const WORDS = [
 
 const ALPHABET = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-const hangmanDisplay = document.getElementById("hangman");
-const livesDisplay = document.getElementById("lives");
-const guessedDisplay = document.getElementById("guessed");
-const wordDisplay = document.getElementById("wordbox");
-const alphabetDisplay = document.getElementById("alphabet");
-const letterGuessInput = document.getElementById("letterguess");
+class HangmanGame {
+  constructor(parentElem) {
+    this.hangmanDisplay = parentElem.querySelector(".hangman");
+    this.livesDisplay = parentElem.querySelector(".lives");
+    this.guessedDisplay = parentElem.querySelector(".guessed");
+    this.wordDisplay = parentElem.querySelector(".word-box");
+    this.alphabetDisplay = parentElem.querySelector(".alphabet");
+    this.letterGuessInput = parentElem.querySelector(".letter-guess");
+    this.tries = 0;
+    this.currAnswer = null;
+    this.lettersGuessed = "";
+    this.correctRemaining = 0;
 
-let currAnswer;
-//tries tried
-let tries = 0;
-let lettersGuessed = "";
-let correctRemaining = 0;
+    this.remainingAlphabet = new Set(ALPHABET);
+    this.word = "";
+    this.gameOver = true;
+    this.charToIndexes = new Map();
 
-let remainingAlphabet = new Set(ALPHABET);
-let word = "";
-let gameOver = true;
-let charToIndexes = new Map();
+    parentElem
+      .querySelector(".guess-button")
+      .addEventListener("click", () => this.guessAndRedraw());
+    parentElem
+      .querySelector(".start-button")
+      .addEventListener("click", () => this.start());
+    this.letterGuessInput.addEventListener("keyup", (event) => {
+      if (event.key === "Enter") {
+        this.guessAndRedraw();
+        event.preventDefault();
+        event.stopPropagation();
+      }
+    });
 
-function start() {
-  lettersGuessed = "";
-  word = WORDS[parseInt(WORDS.length * Math.random())];
-  remainingAlphabet = new Set(ALPHABET);
-  tries = 0;
-  correctRemaining = 0;
-  currAnswer = [];
-  charToIndexes = new Map();
-  for (let i in word) {
-    const c = word[i];
-    if (ALPHABET.has(c)) {
-      currAnswer.push("*");
-      correctRemaining++;
-      const indexes = charToIndexes.get(c) || [];
-      indexes.push(i);
-      charToIndexes.set(c, indexes);
+    // Call start to finish initialization.
+    this.start();
+  }
+
+  start() {
+    this.lettersGuessed = "";
+    this.word = WORDS[parseInt(WORDS.length * Math.random())];
+    this.remainingAlphabet = new Set(ALPHABET);
+    this.tries = 0;
+    this.correctRemaining = 0;
+    this.currAnswer = [];
+    this.charToIndexes = new Map();
+    for (let i in this.word) {
+      const c = this.word[i];
+      if (ALPHABET.has(c)) {
+        this.currAnswer.push("*");
+        this.correctRemaining++;
+        const indexes = this.charToIndexes.get(c) || [];
+        indexes.push(i);
+        this.charToIndexes.set(c, indexes);
+      } else {
+        this.currAnswer.push(c);
+      }
+    }
+    // clear display
+    this.gameOver = false;
+    this.letterGuessInput.value = "";
+    this.redraw();
+  }
+
+  guess() {
+    if (this.gameOver) {
+      return;
+    }
+    let currGuess = this.letterGuessInput.value.toUpperCase();
+    if (!currGuess) {
+      return;
+    }
+    if (!this.remainingAlphabet.has(currGuess)) {
+      return;
+    }
+    this.remainingAlphabet.delete(currGuess);
+    this.lettersGuessed += currGuess;
+    const indexes = this.charToIndexes.get(currGuess);
+    if (!indexes) {
+      this.tries++;
+      if (this.tries === MAX_TRIES) {
+        this.gameOver = true;
+      }
     } else {
-      currAnswer.push(c);
+      for (let i of indexes) {
+        this.currAnswer[i] = currGuess;
+        this.correctRemaining--;
+      }
+      if (this.correctRemaining === 0) {
+        this.gameOver = true;
+      }
     }
   }
-  // clear display
-  gameOver = false;
-  letterGuessInput.value = "";
-  redraw();
-}
-function guess() {
-  if (gameOver) {
-    return;
-  }
-  let currGuess = letterGuessInput.value.toUpperCase();
-  if (!currGuess) {
-    return;
-  }
-  if (!remainingAlphabet.has(currGuess)) {
-    return;
-  }
-  remainingAlphabet.delete(currGuess);
-  lettersGuessed += currGuess;
-  const indexes = charToIndexes.get(currGuess);
-  if (!indexes) {
-    tries++;
-    if (tries === MAX_TRIES) {
-      gameOver = true;
+
+  // updates feedback to user
+  redraw() {
+    this.alphabetDisplay.textContent = [...this.remainingAlphabet].join("");
+    this.guessedDisplay.textContent = this.lettersGuessed;
+    this.livesDisplay.textContent = MAX_TRIES - this.tries;
+    this.letterGuessInput.focus();
+    this.letterGuessInput.select();
+    this.wordDisplay.textContent = this.currAnswer.join("");
+    if (this.correctRemaining === 0) {
+      this.hangmanDisplay.innerHTML = WIN_MESSAGE;
+    } else {
+      this.hangmanDisplay.innerHTML = POOR_DUDE.slice(0, this.tries).join("");
     }
-  } else {
-    for (let i of indexes) {
-      currAnswer[i] = currGuess;
-      correctRemaining--;
-    }
-    if (correctRemaining === 0) {
-      gameOver = true;
-    }
+  }
+
+  guessAndRedraw() {
+    this.guess();
+    this.redraw();
   }
 }
 
-// updates feedback to user
-function redraw() {
-  alphabetDisplay.textContent = [...remainingAlphabet].join("");
-  guessedDisplay.textContent = lettersGuessed;
-  livesDisplay.textContent = MAX_TRIES - tries;
-  letterGuessInput.focus();
-  letterGuessInput.select();
-  wordDisplay.textContent = currAnswer.join("");
-  if (correctRemaining === 0) {
-    hangmanDisplay.innerHTML = WIN_MESSAGE;
-  } else {
-    hangmanDisplay.innerHTML = POOR_DUDE.slice(0, tries).join("");
-  }
-}
-
-function guessAndRedraw() {
-  guess();
-  redraw();
-}
-
-document
-  .getElementById("guess-button")
-  .addEventListener("click", guessAndRedraw);
-document.getElementById("start-button").addEventListener("click", start);
-letterGuessInput.addEventListener("keyup", (event) => {
-  if (event.key === "Enter") {
-    guessAndRedraw();
-    event.preventDefault();
-    event.stopPropagation();
-  }
-});
-
-start();
+new HangmanGame(document.body);
