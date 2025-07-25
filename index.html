@@ -18,18 +18,27 @@
     <h1>Hangman</h1>
     <pre class="hangman"></pre>
     <p>
-      WORD: <span class="word-box" class="monospace"></span>
+      <span class="label">WORD:</span> <span class="word-box monospace"></span>
       <br />
-      MISTAKES LEFT: <span class="lives"></span>
+      <span class="label">GUESSES REMAINING:</span> <span class="lives"></span>
       <br />
-      LETTERS LEFT TO TRY: <span class="alphabet" class="monospace"></span>
+      <span class="label">LETTERS LEFT TO TRY:</span>
+      <span class="alphabet monospace"></span>
       <br />
-      YOU'VE GUESSED: <span class="guessed" class="monospace"></span>
+      <span class="label">YOU'VE GUESSED:</span>
+      <span class="guessed monospace"></span>
       <br />
-      <input size="1" maxlength="1" class="letter-guess" />
+      <input type="text" size="1" maxlength="1" class="letter-guess" />
       <input class="guess-button" type="button" value="Guess A Letter" />
       <input class="start-button" type="button" value="Start New Game" />
     </p>
+    <hr />
+    <button id="make-your-own-button">Make a game with your own phrase</button>
+    <div id="game-maker-area" style="display: none">
+      Your phrase: <input id="new-word" size="20" type="text" />
+      <br />
+      <a id="game-link" style="display: none" href="">Game Link To Share</a>
+    </div>
     <script src="hangman.js"></script>
   </body>
 </html>

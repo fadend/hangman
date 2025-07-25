@@ -1,27 +1,20 @@
-const LINE_ENDING = "\n";
 // hangman figure
 const POOR_DUDE = [
-  "    !" + LINE_ENDING,
-  "    O" + LINE_ENDING,
+  "    !\n",
+  "    O\n",
   "   /",
   "|",
-  "\\" + LINE_ENDING,
-  "    |" + LINE_ENDING,
+  "\\\n",
+  "    |\n",
   "   / ",
-  "\\" + LINE_ENDING + "  HANG!",
+  "\\\n  HANG!",
 ];
 
 const WIN_MESSAGE =
-  "YOU SAVED" +
-  LINE_ENDING +
-  "HIM...." +
-  LINE_ENDING +
-  "THIS TIME..." +
-  LINE_ENDING +
-  " HA HA HA";
+  "YOU SAVED\n" + "HIM....\n" + "THIS TIME...\n" + " HA HA HA";
 
 const MAX_TRIES = POOR_DUDE.length;
-//words to hang by
+// words to hang by
 const WORDS = [
   "DEOXYRIBONUCLEIC ACID",
   "ORCHESTRA",
@@ -58,7 +51,7 @@ const WORDS = [
 const ALPHABET = new Set("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
 class HangmanGame {
-  constructor(parentElem) {
+  constructor(parentElem, optWord) {
     this.hangmanDisplay = parentElem.querySelector(".hangman");
     this.livesDisplay = parentElem.querySelector(".lives");
     this.guessedDisplay = parentElem.querySelector(".guessed");
@@ -90,12 +83,16 @@ class HangmanGame {
     });
 
     // Call start to finish initialization.
-    this.start();
+    this.start(optWord);
   }
 
-  start() {
+  start(optWord) {
     this.lettersGuessed = "";
-    this.word = WORDS[parseInt(WORDS.length * Math.random())];
+    if (optWord) {
+      this.word = optWord;
+    } else {
+      this.word = WORDS[parseInt(WORDS.length * Math.random())];
+    }
     this.remainingAlphabet = new Set(ALPHABET);
     this.tries = 0;
     this.correctRemaining = 0;
@@ -170,4 +167,69 @@ class HangmanGame {
   }
 }
 
-new HangmanGame(document.body);
+// Support for generating a new game.
+
+const baseUrl = location.href.replace(/\?.*/, "");
+const newWordInput = document.getElementById("new-word");
+const newGameLink = document.getElementById("game-link");
+
+function show(elem) {
+  elem.style.display = "";
+}
+
+document
+  .getElementById("make-your-own-button")
+  .addEventListener("click", function () {
+    show(document.getElementById("game-maker-area"));
+    newWordInput.focus();
+    newWordInput.select();
+  });
+
+const A_CODE = "A".charCodeAt(0);
+
+function encodeLetter(x) {
+  x = x.toUpperCase();
+  if (x < "A" || x > "Z") {
+    return x;
+  }
+  const codeOffset = x.charCodeAt(0) - A_CODE;
+  const newOffset = (codeOffset + 13) % 26;
+  return String.fromCharCode(newOffset + A_CODE);
+}
+
+function encodeString(s) {
+  return [...s].map(encodeLetter).join("");
+}
+
+function decodeLetter(x) {
+  if (x < "A" || x > "Z") {
+    return x;
+  }
+  const codeOffset = x.charCodeAt(0) - A_CODE;
+  const newOffset = codeOffset >= 13 ? codeOffset - 13 : 13 + codeOffset;
+  return String.fromCharCode(newOffset + A_CODE);
+}
+
+function extractWordFromQueryString(searchString) {
+  if (!searchString) {
+    return "";
+  }
+  const params = new URLSearchParams(searchString);
+  const word = params.get("w");
+  if (!word) {
+    return "";
+  }
+  return [...word].map(decodeLetter).join("");
+}
+
+newWordInput.addEventListener("keyup", function () {
+  newGameLink.href =
+    baseUrl +
+    "?" +
+    new URLSearchParams({ w: encodeString(newWordInput.value) }).toString();
+  show(newGameLink);
+});
+
+// Hook it all up.
+
+new HangmanGame(document.body, extractWordFromQueryString(location.search));

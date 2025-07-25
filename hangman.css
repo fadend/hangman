@@ -7,7 +7,16 @@
   padding-top: 4px;
   width: 100px;
 }
+.label {
+  color: #555;
+}
 .monospace {
   font-family: monospace;
   font-size: 1.1rem;
+}
+#game-maker-area {
+  padding-top: 10px;
+}
+.wordbox {
+  font-weight: bold;
 }
