@@ -187,27 +187,54 @@ document
 
 const A_CODE = "A".charCodeAt(0);
 
-function encodeLetter(x) {
+// Generate pseudorandom numbers using the Xorshift method.
+class XorshiftRng {
+  constructor() {
+    this.y = 1;
+  }
+  next() {
+    // The constants and update step come from Marsaglia's 2003 paper
+    // "Xorshift RNGs"
+    // https://www.jstatsoft.org/article/view/v008i14.
+    // The first of each has somewhat arbitrarily been selected.
+    this.y ^= this.y << 1;
+    this.y ^= this.y >> 3;
+    this.y ^= this.y << 10;
+    return this.y;
+  }
+}
+
+function positiveMod(x, modulus) {
+  let result = x % modulus;
+  if (result < 0) {
+    return modulus + result;
+  }
+  return result;
+}
+
+function encodeLetter(x, shift) {
   x = x.toUpperCase();
   if (x < "A" || x > "Z") {
     return x;
   }
   const codeOffset = x.charCodeAt(0) - A_CODE;
-  const newOffset = (codeOffset + 13) % 26;
+  const newOffset = positiveMod(codeOffset + shift, 26);
   return String.fromCharCode(newOffset + A_CODE);
 }
 
-function encodeString(s) {
-  return [...s].map(encodeLetter).join("");
-}
-
-function decodeLetter(x) {
-  if (x < "A" || x > "Z") {
-    return x;
+// With sign=-1, this will decode.
+function encodeString(s, sign) {
+  sign = sign || 1;
+  const parts = [];
+  const rng = new XorshiftRng();
+  for (let c of s) {
+    // Note: this is purposely including 0 shifts. Otherwise,
+    // looking at the encoded string would tell you what's *not*
+    // at each position.
+    const shift = sign * positiveMod(rng.next(), 26);
+    parts.push(encodeLetter(c, shift));
   }
-  const codeOffset = x.charCodeAt(0) - A_CODE;
-  const newOffset = codeOffset >= 13 ? codeOffset - 13 : 13 + codeOffset;
-  return String.fromCharCode(newOffset + A_CODE);
+  return parts.join("");
 }
 
 function extractWordFromQueryString(searchString) {
@@ -216,17 +243,22 @@ function extractWordFromQueryString(searchString) {
   }
   const params = new URLSearchParams(searchString);
   const word = params.get("w");
-  if (!word) {
-    return "";
+  if (word) {
+    // Decode rot13. Kept for backward compatibility.
+    return [...word].map((c) => encodeLetter(c, -13)).join("");
   }
-  return [...word].map(decodeLetter).join("");
+  const phrase = params.get("p");
+  if (phrase) {
+    return encodeString(phrase, -1);
+  }
+  return "";
 }
 
 newWordInput.addEventListener("keyup", function () {
   newGameLink.href =
     baseUrl +
     "?" +
-    new URLSearchParams({ w: encodeString(newWordInput.value) }).toString();
+    new URLSearchParams({ p: encodeString(newWordInput.value) }).toString();
   show(newGameLink);
 });
 
