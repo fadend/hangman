@@ -169,7 +169,7 @@ class HangmanGame {
 
 // Support for generating a new game.
 
-const baseUrl = location.href.replace(/\?.*/, "");
+const baseUrl = location.href.replace(/#.*/, "").replace(/\?.*/, "");
 const newWordInput = document.getElementById("new-word");
 const newGameLink = document.getElementById("game-link");
 
@@ -241,6 +241,7 @@ function extractWordFromQueryString(searchString) {
   if (!searchString) {
     return "";
   }
+  searchString = searchString.replace(/^#/, "").replace(/^\?/, "");
   const params = new URLSearchParams(searchString);
   const word = params.get("w");
   if (word) {
@@ -255,13 +256,21 @@ function extractWordFromQueryString(searchString) {
 }
 
 newWordInput.addEventListener("keyup", function () {
+  // Pass the phrase param via the anchor/hash so that it doesn't get sent
+  // to the server.
   newGameLink.href =
     baseUrl +
-    "?" +
+    "#" +
     new URLSearchParams({ p: encodeString(newWordInput.value) }).toString();
   show(newGameLink);
 });
 
 // Hook it all up.
 
-new HangmanGame(document.body, extractWordFromQueryString(location.search));
+// For backwards compatibility, also look in the query string for the params,
+// but prefer to get them from the hash.
+new HangmanGame(
+  document.body,
+  extractWordFromQueryString(location.hash) ||
+    extractWordFromQueryString(location.search),
+);
