@@ -271,6 +271,7 @@ newGameLink.addEventListener("click", function () {
   // sending it to the server, but this has the downside that clicking the link
   // may not cause a page reload, not giving us an opportunity to run our logic.
   location.href = newGameLink.href;
+  location.reload();
 });
 
 // Hook it all up.
