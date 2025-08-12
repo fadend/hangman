@@ -266,6 +266,13 @@ newWordInput.addEventListener("keyup", function () {
   show(newGameLink);
 });
 
+newGameLink.addEventListener("click", function () {
+  // Force a reload. We purposely put the game info in the URL anchor to avoid
+  // sending it to the server, but this has the downside that clicking the link
+  // may not cause a page reload, not giving us an opportunity to run our logic.
+  location.href = newGameLink.href;
+});
+
 // Hook it all up.
 
 // For backwards compatibility, also look in the query string for the params,
